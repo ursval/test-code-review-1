@@ -6,13 +6,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask import request
-from config import TICKET_STATUS_OPEN, TICKET_STATUS_CLOSED, TICKET_STATUS_ANSWERED, TICKET_STATUS_WAITING_FOR_ANSWER, \
-    TICKET_STATUSES, REDIS_TICKET_COMMENTS_KEY_TEMPLATE
+from config import TICKET_STATUS_OPEN, TICKET_STATUSES, REDIS_TICKET_COMMENTS_KEY_TEMPLATE
 import json
 import redis
 import uuid
 
-from tickets.ticket import Ticket
+from tickets.ticket import Ticket, ticket_status_is_valid
 
 app = Flask(__name__)
 env_config = os.getenv("APP_SETTINGS", "config.DevelopmentConfig")
@@ -47,16 +46,6 @@ def ticket_create():
     db.session.add(new_ticket)
     db.session.commit()
     return new_ticket.to_dict()
-
-
-def ticket_status_is_valid(ticket, new_status):
-    if ticket.status == TICKET_STATUS_CLOSED:
-        return False
-
-    result = (ticket.status == TICKET_STATUS_OPEN and new_status in (TICKET_STATUS_ANSWERED, TICKET_STATUS_CLOSED)) or\
-             (ticket.status == TICKET_STATUS_ANSWERED and new_status in (TICKET_STATUS_CLOSED,
-                                                                         TICKET_STATUS_WAITING_FOR_ANSWER))
-    return result
 
 
 @app.route('/ticket/update_status/<int:ticket_id>', methods=['POST'])

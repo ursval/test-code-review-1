@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from tickets.app import db
+from tickets.config import TICKET_STATUS_CLOSED, TICKET_STATUS_OPEN, TICKET_STATUS_ANSWERED, \
+    TICKET_STATUS_WAITING_FOR_ANSWER
 
 
 class Ticket(db.Model):
@@ -25,3 +27,13 @@ class Ticket(db.Model):
             'created_at': str(self.created_at) if self.created_at else None,
             'updated_at': str(self.updated_at) if self.updated_at else None,
         }
+
+
+def ticket_status_is_valid(ticket, new_status):
+    if ticket.status == TICKET_STATUS_CLOSED:
+        return False
+
+    result = (ticket.status == TICKET_STATUS_OPEN and new_status in (TICKET_STATUS_ANSWERED, TICKET_STATUS_CLOSED)) or\
+             (ticket.status == TICKET_STATUS_ANSWERED and new_status in (TICKET_STATUS_CLOSED,
+                                                                         TICKET_STATUS_WAITING_FOR_ANSWER))
+    return result
