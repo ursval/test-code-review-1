@@ -1,4 +1,5 @@
-from app import Ticket, db, Comment
+from app import db, Comment
+from tickets.ticket import Ticket
 from config import TICKET_STATUS_OPEN
 
 new_ticket = Ticket(
