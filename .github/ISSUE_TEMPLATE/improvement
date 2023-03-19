@@ -1,0 +1,28 @@
+name: Improvement
+description: Place of possible improvement found during review proces
+title: "[Imp]: "
+labels: []
+body:
+  - type: input
+    id: module
+    attributes:
+      label: Module
+      description:  Module which can be improved
+      placeholder: ex. app.py
+    validations:
+      required: false
+  - type: input
+    id: line
+    attributes:
+      label: Line
+      description:  place in file
+      placeholder: ex. 69
+    validations:
+      required: false
+  - type: textarea
+    id: subject
+    attributes:
+      label: What to improve
+      description: Describe possible improvement
+    validations:
+      required: false
